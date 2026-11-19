@@ -99,7 +99,9 @@
   .done .countdown { display: none; }
 
   @media (max-width: 640px) {
-    .countdown { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 48px; }
+    .countdown { gap: 18px; }
+    .unit { gap: 10px; }
+    .label { font-size: 0.8125rem; padding-top: 8px; }
   }
 
   @media (prefers-reduced-motion: no-preference) {
