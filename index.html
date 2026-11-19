@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celux</title>
+<meta name="description" content="Celux llega pronto.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='7' width='20' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='14' width='12' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='21' width='20' height='4' fill='%2300C2FF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000;
+    --white: #fff;
+    --hydra: #00C2FF;
+    --mute: #8a8a8a;
+    --gutter: clamp(16px, 5vw, 72px);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: "Chakra Petch", system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(40px, 8vh, 96px);
+    padding-block: clamp(24px, 6vh, 64px);
+    padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .logo { width: clamp(150px, 22vw, 300px); height: auto; display: block; }
+  .logo rect, .logo line { fill: var(--white); stroke: var(--white); }
+  .logo .e { fill: var(--hydra); }
+
+  .main {
+    align-self: end;
+    display: grid;
+    gap: clamp(28px, 5vh, 56px);
+  }
+
+  .headline {
+    font-weight: 500;
+    font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 22ch;
+  }
+
+  .when {
+    color: var(--mute);
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    margin-top: 0.5em;
+  }
+
+  .countdown {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(28px, 6vw, 112px);
+  }
+
+  .unit { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
+
+  .digits { width: 100%; height: auto; display: block; overflow: visible; }
+  .digits rect { fill: var(--hydra); }
+
+  .label {
+    color: var(--mute);
+    font-size: clamp(0.875rem, 1.2vw, 1.0625rem);
+    padding-top: 12px;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--mute);
+    font-size: 0.875rem;
+  }
+
+  .done .countdown { display: none; }
+
+  @media (max-width: 640px) {
+    .countdown { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 48px; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .logo .bar {
+      transform-box: fill-box;
+      transform-origin: left center;
+      animation: draw 700ms cubic-bezier(.7, 0, .2, 1) both;
+      animation-delay: calc(var(--i) * 70ms + 150ms);
+    }
+    .logo .bar.v { transform-origin: center top; animation-name: drawv; }
+    .logo .arm { animation: fade 400ms ease-out both; animation-delay: calc(var(--i) * 70ms + 150ms); }
+    @keyframes draw { from { transform: scaleX(0); } }
+    @keyframes drawv { from { transform: scaleY(0); } }
+    @keyframes fade { from { opacity: 0; } }
+  }
+</style>
+</head>
+<body>
+<div class="page" id="page">
+  <header>
+    <svg class="logo" viewBox="209 592 1581 226" role="img" aria-label="Celux">
+      <rect class="bar v" style="--i:0" x="209" y="592" width="33" height="218"/>
+      <rect class="bar"   style="--i:1" x="209" y="592" width="248" height="33"/>
+      <rect class="bar"   style="--i:2" x="209" y="777" width="248" height="33"/>
+      <rect class="bar e" style="--i:3" x="551" y="592" width="247" height="33"/>
+      <rect class="bar e" style="--i:4" x="551" y="685" width="153" height="33"/>
+      <rect class="bar e" style="--i:5" x="551" y="777" width="247" height="33"/>
+      <rect class="bar v" style="--i:6" x="891" y="592" width="33" height="226"/>
+      <rect class="bar"   style="--i:7" x="891" y="785" width="244" height="33"/>
+      <rect class="bar v" style="--i:8" x="1228" y="592" width="33" height="226"/>
+      <rect class="bar v" style="--i:8" x="1439" y="592" width="33" height="226"/>
+      <rect class="bar"   style="--i:9" x="1228" y="785" width="244" height="33"/>
+      <g stroke-width="33" stroke-linecap="butt">
+        <line class="arm" style="--i:10" x1="1578" y1="605" x2="1665.5" y2="693"/>
+        <line class="arm" style="--i:10" x1="1777" y1="605" x2="1689.5" y2="693"/>
+        <line class="arm" style="--i:11" x1="1578" y1="805" x2="1665.5" y2="717"/>
+        <line class="arm" style="--i:11" x1="1777" y1="805" x2="1689.5" y2="717"/>
+      </g>
+    </svg>
+  </header>
+
+  <main class="main">
+    <div>
+      <h1 class="headline" id="headline">Algo nuevo se enciende.</h1>
+      <p class="when" id="when"></p>
+    </div>
+
+    <div class="countdown" role="timer" aria-live="off" id="countdown">
+      <div class="unit"><svg class="digits" data-unit="d" aria-hidden="true"></svg><span class="label" id="l-d">días</span></div>
+      <div class="unit"><svg class="digits" data-unit="h" aria-hidden="true"></svg><span class="label" id="l-h">horas</span></div>
+      <div class="unit"><svg class="digits" data-unit="m" aria-hidden="true"></svg><span class="label" id="l-m">minutos</span></div>
+      <div class="unit"><svg class="digits" data-unit="s" aria-hidden="true"></svg><span class="label" id="l-s">segundos</span></div>
+    </div>
+    <p class="sr-only" id="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></p>
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> Celux</span>
+  </footer>
+</div>
+
+<script>
+  // Fecha de lanzamiento (hora de Ciudad de México)
+  const LAUNCH = new Date("2026-12-18T00:00:00-06:00");
+
+  // Dígitos construidos con el mismo sistema de barras del logo (grosor ≈ 15% de la altura)
+  const W = 10, H = 15, T = 1.45, MID = (H - T) / 2;
+  const SEG = {
+    a: [0, 0, W, T],
+    b: [W - T, 0, T, H / 2 + T / 2],
+    c: [W - T, MID, T, H - MID],
+    d: [0, H - T, W, T],
+    e: [0, MID, T, H - MID],
+    f: [0, 0, T, H / 2 + T / 2],
+    g: [0, MID, W, T],
+  };
+  const MAP = ["abcdef", "bc", "abged", "abgcd", "fgbc", "afgcd", "afgedc", "abc", "abcdefg", "abcdfg"];
+  const GAP = 3.6;
+
+  function render(svg, str) {
+    if (svg.dataset.v === str) return;
+    svg.dataset.v = str;
+    const width = str.length * W + (str.length - 1) * GAP;
+    svg.setAttribute("viewBox", `0 0 ${width} ${H}`);
+    let out = "";
+    [...str].forEach((ch, i) => {
+      const ox = i * (W + GAP);
+      for (const s of MAP[+ch]) {
+        const [x, y, w, h] = SEG[s];
+        out += `<rect x="${x + ox}" y="${y}" width="${w}" height="${h}"/>`;
+      }
+    });
+    svg.innerHTML = out;
+  }
+
+  const svgs = Object.fromEntries([...document.querySelectorAll(".digits")].map(s => [s.dataset.unit, s]));
+  const pad = n => String(n).padStart(2, "0");
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+  document.getElementById("when").textContent = "Abrimos el " +
+    new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "long", timeZone: "America/Mexico_City" }).format(LAUNCH) + ".";
+
+  function tick() {
+    const ms = LAUNCH - Date.now();
+    if (ms <= 0) {
+      document.getElementById("page").classList.add("done");
+      document.getElementById("headline").textContent = "Ya llegamos.";
+      document.getElementById("when").textContent = "";
+      return false;
+    }
+    const s = Math.floor(ms / 1000);
+    const d = Math.floor(s / 86400), h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, sec = s % 60;
+    render(svgs.d, pad(d));
+    render(svgs.h, pad(h));
+    render(svgs.m, pad(m));
+    render(svgs.s, pad(sec));
+    document.getElementById("l-d").textContent = d === 1 ? "día" : "días";
+    document.getElementById("l-h").textContent = h === 1 ? "hora" : "horas";
+    document.getElementById("l-m").textContent = m === 1 ? "minuto" : "minutos";
+    document.getElementById("l-s").textContent = sec === 1 ? "segundo" : "segundos";
+    if (sec === 0 || !tick.sr) {
+      tick.sr = true;
+      document.getElementById("sr").textContent = `Faltan ${d} días, ${h} horas y ${m} minutos.`;
+    }
+    return true;
+  }
+
+  if (tick()) {
+    const loop = () => { if (tick()) setTimeout(loop, 1000 - (Date.now() % 1000)); };
+    setTimeout(loop, 1000 - (Date.now() % 1000));
+  }
+</script>
+</body>
+</html>
