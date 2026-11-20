@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Celux | Variante C</title>
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='7' width='20' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='14' width='12' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='21' width='20' height='4' fill='%2300C2FF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  .page {
+    grid-template-rows: auto 1fr auto auto;
+    gap: clamp(28px, 5vh, 56px);
+  }
+
+  .stage { align-self: center; justify-self: end; width: min(100%, 640px); display: grid; gap: 18px; }
+
+  .cal-note { color: var(--mute); font-size: 0.875rem; }
+
+  .cal {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 16px clamp(8px, 1.2vw, 14px);
+  }
+
+  .dow { color: var(--mute); font-size: 0.75rem; }
+
+  .day { display: grid; gap: 6px; }
+  .day .bar { height: clamp(6px, 0.8vw, 11px); background: var(--track); position: relative; overflow: hidden; }
+  .day .bar i {
+    position: absolute; inset: 0;
+    background: var(--hydra);
+    transform-origin: left center;
+    transform: scaleX(var(--f, 0));
+  }
+  .day .n { color: var(--mute); font-size: 0.75rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .day.past .bar { background: var(--hydra); }
+  .day.today .n { color: var(--white); }
+  .day.launch .bar { background: var(--white); }
+  .day.launch .n { color: var(--white); }
+  .day.blank { visibility: hidden; }
+
+  .main { display: grid; gap: clamp(28px, 5vh, 56px); }
+
+  @media (max-width: 640px) {
+    .day .n { font-size: 0.6875rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header data-logo></header>
+
+  <section class="stage" aria-label="Días hasta la apertura">
+    <p class="cal-note">Cada barra es un día hasta la apertura.</p>
+    <div class="cal" id="cal"></div>
+  </section>
+
+  <main class="main">
+    <div>
+      <h1 class="headline" data-headline>Algo nuevo se enciende.</h1>
+      <p class="when" data-when></p>
+    </div>
+    <div class="countdown" data-countdown></div>
+    <p class="sr" data-sr></p>
+  </main>
+
+  <footer class="footer">© <span data-year></span> Celux</footer>
+</div>
+
+<script src="common.js"></script>
+<script>
+  const { START, LAUNCH, DAY } = Celux;
+  const OFFSET = 6 * 3600000;
+  const MONTHS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  const cal = document.getElementById("cal");
+  const mx = t => new Date(t - OFFSET);
+  const weekday = t => (mx(t).getUTCDay() + 6) % 7;
+
+  function build(now) {
+    const today = START.getTime() + Math.floor((now - START) / DAY) * DAY;
+    const first = START.getTime() - weekday(START.getTime()) * DAY;
+    const last = LAUNCH.getTime() + (6 - weekday(LAUNCH.getTime())) * DAY;
+    let html = ["L", "M", "X", "J", "V", "S", "D"].map(d => `<span class="dow">${d}</span>`).join("");
+    for (let t = first; t <= last; t += DAY) {
+      const d = mx(t);
+      const date = d.getUTCDate();
+      let cls = "", fill = 0;
+      if (t < START.getTime() || t > LAUNCH.getTime()) cls = "blank";
+      else if (t === LAUNCH.getTime()) cls = "launch";
+      else if (t < today) cls = "past";
+      else if (t === today) { cls = "today"; fill = (now - today) / DAY; }
+      const label = (t === START.getTime() || date === 1 || t === LAUNCH.getTime()) ? `${date} ${MONTHS[d.getUTCMonth()]}` : date;
+      html += `<div class="day ${cls}"><span class="bar"><i style="--f:${fill.toFixed(4)}"></i></span><span class="n">${label}</span></div>`;
+    }
+    cal.innerHTML = html;
+  }
+
+  let lastMinute = -1;
+  Celux.boot(p => {
+    const minute = Math.floor(p.now / 60000);
+    if (minute !== lastMinute) { lastMinute = minute; build(p.now); }
+  });
+</script>
+</body>
+</html>

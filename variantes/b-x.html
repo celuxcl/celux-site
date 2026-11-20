@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Celux | Variante B</title>
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='7' width='20' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='14' width='12' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='21' width='20' height='4' fill='%2300C2FF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  .page {
+    grid-template-rows: auto 1fr auto auto;
+    justify-items: center;
+    text-align: center;
+    gap: clamp(28px, 5vh, 56px);
+  }
+
+  .stage { display: grid; place-items: center; width: 100%; }
+
+  .big-x { width: min(46vh, 76vw); height: auto; display: block; overflow: visible; }
+  .big-x line { stroke-width: 33; }
+  .big-x .ghost line { stroke: var(--track); }
+  .big-x .arm line { stroke: var(--hydra); }
+  .big-x .arm { transition: transform 1600ms cubic-bezier(.16, .8, .2, 1); }
+
+  .main { display: grid; gap: clamp(28px, 5vh, 48px); justify-items: center; width: 100%; }
+  .countdown { width: min(100%, 760px); text-align: left; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .big-x .arm { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header data-logo></header>
+
+  <div class="stage" aria-hidden="true">
+    <svg class="big-x" viewBox="-70 -70 364 364">
+      <g class="ghost">
+        <line x1="12" y1="12" x2="99.5" y2="100"/>
+        <line x1="211" y1="12" x2="123.5" y2="100"/>
+        <line x1="12" y1="212" x2="99.5" y2="124"/>
+        <line x1="211" y1="212" x2="123.5" y2="124"/>
+      </g>
+      <g class="arm" data-dir="-1,-1"><line x1="12" y1="12" x2="99.5" y2="100"/></g>
+      <g class="arm" data-dir="1,-1"><line x1="211" y1="12" x2="123.5" y2="100"/></g>
+      <g class="arm" data-dir="-1,1"><line x1="12" y1="212" x2="99.5" y2="124"/></g>
+      <g class="arm" data-dir="1,1"><line x1="211" y1="212" x2="123.5" y2="124"/></g>
+    </svg>
+  </div>
+
+  <main class="main">
+    <div>
+      <h1 class="headline" data-headline>Algo nuevo se enciende.</h1>
+      <p class="when" data-when></p>
+    </div>
+    <div class="countdown" data-countdown></div>
+    <p class="sr" data-sr></p>
+  </main>
+
+  <footer class="footer">© <span data-year></span> Celux</footer>
+</div>
+
+<script src="common.js"></script>
+<script>
+  // Los brazos de la X se acercan a medida que llega la apertura; el día del lanzamiento forman el logo.
+  const MAX = 60;
+  const arms = [...document.querySelectorAll(".big-x .arm")].map(g => ({ g, dir: g.dataset.dir.split(",").map(Number) }));
+  const place = off => arms.forEach(({ g, dir }) => { g.style.transform = `translate(${dir[0] * off}px, ${dir[1] * off}px)`; });
+  place(MAX * 3);
+  arms[0].g.getBoundingClientRect();
+  Celux.boot(p => place(MAX * (1 - p.progress)));
+</script>
+</body>
+</html>

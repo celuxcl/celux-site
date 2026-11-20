@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Celux | Variantes</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  .page { grid-template-rows: auto auto 1fr; gap: clamp(32px, 6vh, 64px); max-width: 880px; }
+  .intro { color: var(--mute); max-width: 52ch; margin-top: 0.75em; }
+  .list { list-style: none; padding: 0; display: grid; border-top: 1px solid var(--rule); align-self: start; }
+  .list a {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 4px 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+  }
+  .list a:hover .name { color: var(--hydra); }
+  .key { color: var(--hydra); font-weight: 500; font-size: 1.25rem; grid-row: span 2; }
+  .name { font-weight: 500; font-size: 1.25rem; }
+  .desc { color: var(--mute); grid-column: 2; max-width: 60ch; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header data-logo></header>
+  <div>
+    <h1 class="headline">Variantes de la cuenta regresiva</h1>
+    <p class="intro">Las tres usan el mismo timer, los mismos textos y el cian Hydra. Cambia el elemento del logo que protagoniza la página.</p>
+  </div>
+  <ul class="list">
+    <li><a href="../"><span class="key">0</span><span class="name">Actual</span><span class="desc">La versión publicada hoy, como referencia.</span></a></li>
+    <li><a href="a-e.html"><span class="key">A</span><span class="name">La E que se llena</span><span class="desc">La E del logo en grande, recortada contra el borde. Arriba se llena con el avance hasta la apertura, al medio con el avance del día y abajo con cada minuto.</span></a></li>
+    <li><a href="b-x.html"><span class="key">B</span><span class="name">La X que se cierra</span><span class="desc">Composición centrada. Los cuatro brazos de la X entran al cargar y se van juntando a medida que se acerca la fecha. El día del lanzamiento forman la X del logo.</span></a></li>
+    <li><a href="c-calendario.html"><span class="key">C</span><span class="name">Calendario de barras</span><span class="desc">Cada día hasta la apertura es una barra, ordenadas por semana. Los días pasados en cian, el de hoy se llena con las horas y el de la apertura en blanco.</span></a></li>
+  </ul>
+</div>
+<script src="common.js"></script>
+<script>Celux.boot();</script>
+</body>
+</html>

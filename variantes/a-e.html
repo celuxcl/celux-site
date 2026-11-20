@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Celux | Variante A</title>
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='6' y='7' width='20' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='14' width='12' height='4' fill='%2300C2FF'/%3E%3Crect x='6' y='21' width='20' height='4' fill='%2300C2FF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  .page {
+    grid-template-rows: auto 1fr auto auto;
+    gap: clamp(28px, 5vh, 56px);
+    overflow: hidden;
+  }
+
+  .stage {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: calc(-1 * max(var(--gutter), env(safe-area-inset-right, 0px)));
+  }
+
+  .big-e { height: clamp(180px, 40vh, 460px); width: auto; display: block; margin-right: -12%; }
+  .big-e .track { fill: var(--track); }
+  .big-e .fill {
+    fill: var(--hydra);
+    transform-box: fill-box;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 900ms cubic-bezier(.2, .7, .2, 1);
+  }
+
+  .main { display: grid; gap: clamp(28px, 5vh, 56px); }
+
+  @media (max-width: 640px) {
+    .big-e { height: clamp(150px, 32vh, 300px); margin-right: -18%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header data-logo></header>
+
+  <div class="stage" aria-hidden="true">
+    <svg class="big-e" viewBox="0 0 737 582">
+      <rect class="track" x="0" y="0" width="737" height="100"/>
+      <rect class="track" x="0" y="241" width="456" height="100"/>
+      <rect class="track" x="0" y="482" width="737" height="100"/>
+      <rect class="fill" id="f1" x="0" y="0" width="737" height="100"/>
+      <rect class="fill" id="f2" x="0" y="241" width="456" height="100"/>
+      <rect class="fill" id="f3" x="0" y="482" width="737" height="100"/>
+    </svg>
+  </div>
+
+  <main class="main">
+    <div>
+      <h1 class="headline" data-headline>Algo nuevo se enciende.</h1>
+      <p class="when" data-when></p>
+    </div>
+    <div class="countdown" data-countdown></div>
+    <p class="sr" data-sr></p>
+  </main>
+
+  <footer class="footer">© <span data-year></span> Celux</footer>
+</div>
+
+<script src="common.js"></script>
+<script>
+  // Barra superior: avance hacia la apertura. Media: avance del día. Inferior: avance del minuto.
+  const f = [1, 2, 3].map(i => document.getElementById("f" + i));
+  f[0].getBoundingClientRect();
+  Celux.boot(p => {
+    const vals = p.ms <= 0 ? [1, 1, 1] : [p.progress, p.dayFraction, p.minuteFraction];
+    vals.forEach((v, i) => { f[i].style.transform = `scaleX(${v})`; });
+  });
+</script>
+</body>
+</html>

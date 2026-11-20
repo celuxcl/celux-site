@@ -1,0 +1,95 @@
+:root {
+  --black: #000;
+  --white: #fff;
+  --hydra: #00C2FF;
+  --mute: #8a8a8a;
+  --track: #1d1d1d;
+  --rule: #2a2a2a;
+  --gutter: clamp(16px, 5vw, 72px);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+html, body { height: 100%; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: "Chakra Petch", system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.page {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: clamp(24px, 6vh, 64px);
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  max-width: 1600px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.logo { width: clamp(150px, 22vw, 300px); height: auto; display: block; }
+.logo rect, .logo line { fill: var(--white); stroke: var(--white); }
+.logo .e { fill: var(--hydra); }
+
+.headline {
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.when { color: var(--mute); font-size: clamp(1rem, 1.4vw, 1.25rem); margin-top: 0.5em; }
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(18px, 6vw, 112px);
+}
+
+.unit { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.digits { width: 100%; height: auto; display: block; }
+.digits rect { fill: var(--hydra); }
+
+.label {
+  color: var(--mute);
+  font-size: clamp(0.8125rem, 1.2vw, 1.0625rem);
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+
+.footer { color: var(--mute); font-size: 0.875rem; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.done .countdown { display: none; }
+
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--hydra); outline-offset: 4px; }
+
+@media (max-width: 640px) {
+  .unit { gap: 10px; }
+  .label { padding-top: 8px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logo .bar {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: draw 700ms cubic-bezier(.7, 0, .2, 1) both;
+    animation-delay: calc(var(--i) * 70ms + 150ms);
+  }
+  .logo .bar.v { transform-origin: center top; animation-name: drawv; }
+  .logo .arm { animation: fade 400ms ease-out both; animation-delay: calc(var(--i) * 70ms + 150ms); }
+  @keyframes draw { from { transform: scaleX(0); } }
+  @keyframes drawv { from { transform: scaleY(0); } }
+  @keyframes fade { from { opacity: 0; } }
+}
