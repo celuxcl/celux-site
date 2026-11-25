@@ -73,12 +73,6 @@
     max-width: 22ch;
   }
 
-  .when {
-    color: var(--mute);
-    font-size: clamp(1rem, 1.4vw, 1.25rem);
-    margin-top: 0.5em;
-  }
-
   .countdown {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -106,6 +100,38 @@
   }
 
   .done .countdown { display: none; }
+
+  /* Simulador temporal, visible solo con ?sim en la URL */
+  .sim {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    padding-top: 14px;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+    background: #141414;
+    border-top: 1px solid #2a2a2a;
+    font-size: 0.875rem;
+    color: var(--mute);
+  }
+  .sim[hidden] { display: none; }
+  .sim input { flex: 1 1 240px; min-width: 0; accent-color: var(--hydra); }
+  .sim output { color: var(--white); font-variant-numeric: tabular-nums; min-width: 15ch; }
+  .sim button {
+    font: inherit;
+    color: var(--white);
+    background: none;
+    border: 1px solid #3a3a3a;
+    padding: 6px 14px;
+    cursor: pointer;
+  }
+  .sim button:hover { border-color: var(--hydra); }
+  .sim :focus-visible { outline: 2px solid var(--hydra); outline-offset: 2px; }
+  .sim-on .page { padding-bottom: 120px; }
 
   @media (max-width: 640px) {
     .countdown { gap: 18px; }
@@ -156,10 +182,7 @@
   </header>
 
   <main class="main">
-    <div>
-      <h1 class="headline" id="headline">Algo nuevo se enciende.</h1>
-      <p class="when" id="when"></p>
-    </div>
+    <h1 class="headline" id="headline">Algo nuevo se enciende.</h1>
 
     <div class="countdown" role="timer" aria-live="off" id="countdown">
       <div class="unit"><svg class="digits" data-unit="d" aria-hidden="true"></svg><span class="label" id="l-d">días</span></div>
@@ -171,8 +194,15 @@
   </main>
 
   <footer class="footer">
-    <span>© <span id="year"></span> Celux</span>
+    <span>CELUX</span>
   </footer>
+</div>
+
+<div class="sim" id="sim" hidden>
+  <label for="sim-range">Simular fecha</label>
+  <input type="range" id="sim-range" min="0" max="1000" step="1">
+  <output id="sim-out" for="sim-range"></output>
+  <button type="button" id="sim-now">Volver a ahora</button>
 </div>
 
 <script>
@@ -182,17 +212,21 @@
   const START = new Date("2026-11-18T00:00:00-06:00");
   const DAY = 86400000;
 
+  // Reloj de la página; el simulador le suma un desfase
+  let offset = 0;
+  const now = () => Date.now() + offset;
+
   // E del logo: arriba el avance hasta la apertura, al medio el avance del día, abajo el del minuto
   const logo = document.querySelector(".logo");
   const eFills = [...document.querySelectorAll(".logo .e-fill")];
   let eReady = false;
   function fillE(done) {
     if (!eReady) return;
-    const now = Date.now();
+    const t = now();
     const vals = done ? [1, 1, 1] : [
-      Math.min(1, Math.max(0, (now - START) / (LAUNCH - START))),
-      (((now - START) % DAY) + DAY) % DAY / DAY,
-      new Date(now).getSeconds() / 60,
+      Math.min(1, Math.max(0, (t - START) / (LAUNCH - START))),
+      (((t - START) % DAY) + DAY) % DAY / DAY,
+      new Date(t).getSeconds() / 60,
     ];
     vals.forEach((v, i) => { eFills[i].style.transform = `scaleX(${v})`; });
   }
@@ -200,7 +234,7 @@
   setTimeout(() => {
     eReady = true;
     if (!reduceMotion) { logo.classList.add("live"); eFills[0].getBoundingClientRect(); }
-    fillE(Date.now() >= LAUNCH);
+    fillE(now() >= LAUNCH);
   }, reduceMotion ? 0 : 1000);
 
   // Dígitos construidos con el mismo sistema de barras del logo (grosor ≈ 15% de la altura)
@@ -236,19 +270,16 @@
   const svgs = Object.fromEntries([...document.querySelectorAll(".digits")].map(s => [s.dataset.unit, s]));
   const pad = n => String(n).padStart(2, "0");
 
-  document.getElementById("year").textContent = new Date().getFullYear();
-  document.getElementById("when").textContent = "Abrimos el " +
-    new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "long", timeZone: "America/Mexico_City" }).format(LAUNCH) + ".";
+  const page = document.getElementById("page");
+  const headline = document.getElementById("headline");
 
   function tick() {
-    const ms = LAUNCH - Date.now();
-    if (ms <= 0) {
-      document.getElementById("page").classList.add("done");
-      document.getElementById("headline").textContent = "Ya llegamos.";
-      fillE(true);
-      document.getElementById("when").textContent = "";
-      return false;
-    }
+    const ms = LAUNCH - now();
+    const done = ms <= 0;
+    page.classList.toggle("done", done);
+    headline.textContent = done ? "Ya llegamos." : "Algo nuevo se enciende.";
+    syncSim();
+    if (done) { fillE(true); return; }
     const s = Math.floor(ms / 1000);
     const d = Math.floor(s / 86400), h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, sec = s % 60;
     render(svgs.d, pad(d));
@@ -264,13 +295,38 @@
       tick.sr = true;
       document.getElementById("sr").textContent = `Faltan ${d} días, ${h} horas y ${m} minutos.`;
     }
-    return true;
   }
 
-  if (tick()) {
-    const loop = () => { if (tick()) setTimeout(loop, 1000 - (Date.now() % 1000)); };
-    setTimeout(loop, 1000 - (Date.now() % 1000));
+  // Simulador temporal: ?sim en la URL muestra una barra para mover la fecha entre el inicio y la apertura
+  const sim = document.getElementById("sim");
+  const simRange = document.getElementById("sim-range");
+  const simOut = document.getElementById("sim-out");
+  const simOn = new URLSearchParams(location.search).has("sim");
+  const simFmt = new Intl.DateTimeFormat("es-MX", {
+    weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: false, timeZone: "America/Mexico_City",
+  });
+  function syncSim() {
+    if (!simOn) return;
+    const t = now();
+    simOut.textContent = simFmt.format(t);
+    if (document.activeElement !== simRange) {
+      simRange.value = Math.round(Math.min(1, Math.max(0, (t - START) / (LAUNCH - START))) * 1000);
+    }
   }
+  if (simOn) {
+    sim.hidden = false;
+    document.body.classList.add("sim-on");
+    simRange.addEventListener("input", () => {
+      offset = START.getTime() + (simRange.value / 1000) * (LAUNCH - START) - Date.now();
+      tick();
+    });
+    document.getElementById("sim-now").addEventListener("click", () => { offset = 0; tick(); });
+  }
+
+  tick();
+  const loop = () => { tick(); setTimeout(loop, 1000 - (Date.now() % 1000)); };
+  setTimeout(loop, 1000 - (Date.now() % 1000));
 </script>
 </body>
 </html>
